@@ -1,0 +1,128 @@
+-- 12 Tone Jazz 3 - Lua Programming Language
+-- Drums added in Pro Tools
+
+chromatic = {60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71}
+
+used = {}
+
+primeOrder = {}
+
+measures_8 = {}
+
+function onNote(e)
+  compose_primeOrder()
+  assemble_8_measures()
+  playsolution()
+end
+
+function playsolution()
+  count = 1
+  for j = 1, 4 do
+
+    for bass = 1, 12 do
+      noteIndex = measures_8[count]
+      octave = - 24
+      if(math.random(100) > 50) then
+        playNote(chromatic[noteIndex] + octave, 96, 300)
+        count = count + 1
+        wait(300)
+      else
+        playNote(chromatic[noteIndex] + octave, 96, 900)
+        count = count + 1
+        wait(900)
+      end
+    end
+    noteIndex = measures_8[count]
+    playNote(chromatic[noteIndex] + octave, 96, 1200)
+    count = count + 1
+    wait(1400)
+
+    for melody = 1, 26 do
+      noteIndex = measures_8[count]
+      if(math.random(100) > 50) then
+        octave = 0
+      else
+        octave = -12
+      end
+      if(math.random(100) > 16) then
+        playNote(chromatic[noteIndex] + octave, 106, 146)
+        count = count + 1
+        wait(150)
+      else
+        playNote(chromatic[noteIndex] + octave, 106, 450)
+        count = count + 1
+        wait(450)
+      end
+    end
+
+    noteIndex = measures_8[count]
+    playNote(chromatic[noteIndex] + octave, 106, 1200)
+    count = count + 1
+    wait(1400)
+    print("j - "..j.." -  ".."Count - "..count)
+  end
+
+  noteIndex = measures_8[count]
+  for chords = 1, 3 do
+    playNote(chromatic[noteIndex] - 12, 86, 600)
+    playNote(chromatic[noteIndex], 86, 600)
+    count = count + 1
+    noteIndex = measures_8[count]
+    playNote(chromatic[noteIndex], 86, 600)
+    count = count + 1
+    noteIndex = measures_8[count]
+    playNote(chromatic[noteIndex], 86, 600)
+    count = count + 1
+    wait(600)
+  end
+  noteIndex = measures_8[count]
+  playNote(chromatic[noteIndex] - 12, 86, 1200)
+  playNote(chromatic[noteIndex], 86, 1200)
+  count = count + 1
+  noteIndex = measures_8[count]
+  playNote(chromatic[noteIndex], 86, 1200)
+  count = count + 1
+  noteIndex = measures_8[count]
+  playNote(chromatic[noteIndex], 86, 1200)
+  count = count + 1
+  wait(2400)
+end
+
+function assemble_8_measures()
+  m8index = 1
+  for j = 1, 50 do -- 600
+    for k = 1, 12 do
+      measures_8[m8index] = primeOrder[k]
+      m8index = m8index + 1
+    end
+  end
+  -- for x = 1, 250 do
+  -- prnt = measures_8[x]
+  -- print("mea8 number - "..x.." "..prnt)
+  -- end
+end
+
+function compose_primeOrder()
+  for u = 1, 12 do
+    used[u] = true
+  end
+  for pIndex = 1, 12 do
+    local note = random12()
+    primeOrder[pIndex] = note
+    -- print("Prime Order  "..pIndex.."  "..note)
+  end
+  -- print()
+end
+
+function random12()
+  notfound = true
+  while notfound do
+    candidate = math.random(1, 12)
+    if used[candidate] == true then
+      goodnote = candidate
+      used[candidate] = false
+      notfound = false
+    end
+  end
+  return goodnote
+end
